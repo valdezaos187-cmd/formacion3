@@ -3,43 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego Interactivo Educativo - Ciencias Sociales</title>
-    <!-- Tailwind CSS con paleta personalizada Café / Anaranjado -->
+    <title>Juego Interactivo - Ciencias Sociales | I.E. Santísima Niña María</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            200: '#fed7aa',
-                            300: '#fdba74',
-                            400: '#fb923c',
-                            500: '#f97316',
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            800: '#9a3412',
-                            900: '#7c2d12',
-                            950: '#431407',
-                        },
-                        amberbrown: {
-                            800: '#54230e',
-                            900: '#3a1607',
+                        amberCustom: {
+                            50: '#fffbeed',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                            950: '#451a03'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- Tone.js para síntesis de efectos sonoros -->
+    <!-- Tone.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .heart-beat { animation: heartbeat 1.5s infinite; }
         @keyframes heartbeat { 
@@ -52,11 +46,11 @@
         .heart-lost { filter: grayscale(100%); opacity: 0.3; animation: none; }
         
         .feedback-pop { 
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+            animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
         }
         @keyframes popIn {
             0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.15); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 1; }
             100% { transform: scale(1); opacity: 0; }
         }
 
@@ -73,49 +67,46 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-amberbrown-900 via-brand-950 to-stone-900 min-h-screen text-white flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-amber-950 via-stone-900 to-orange-950 min-h-screen text-amber-50 flex items-center justify-center p-4">
 
-    <!-- Notificación emergente para alertas o errores -->
-    <div id="custom-notification" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-red-700 text-white px-6 py-3 rounded-xl shadow-2xl font-bold flex items-center gap-3 border border-red-500">
+    <!-- Notificación Custom -->
+    <div id="custom-notification" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-amber-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold flex items-center gap-3">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-        <span id="notification-msg">Mensaje de notificación</span>
-        <button onclick="hideNotification()" class="ml-4 text-white hover:text-red-200">✖</button>
+        <span id="notification-msg">Mensaje de error</span>
+        <button onclick="hideNotification()" class="ml-4 text-white hover:text-amber-200">✖</button>
     </div>
 
-    <!-- Retroalimentación visual animada -->
+    <!-- Feedback visual animado -->
     <div id="feedback-overlay" class="fixed inset-0 flex items-center justify-center pointer-events-none z-50 hidden">
         <h2 id="feedback-text" class="text-5xl md:text-7xl font-black text-amber-400 drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] text-center tracking-wider"></h2>
     </div>
 
-    <!-- Contenedor Principal de la App -->
-    <div class="max-w-3xl w-full bg-stone-50 text-stone-800 rounded-3xl shadow-2xl overflow-hidden fade-in relative border border-amber-200">
+    <div class="max-w-3xl w-full bg-stone-50 text-stone-800 rounded-3xl shadow-2xl overflow-hidden fade-in relative border border-amber-800/30">
         
-        <!-- Encabezado de la Institución Educativa -->
-        <header class="bg-gradient-to-r from-brand-900 via-brand-800 to-amber-900 text-white p-6 text-center shadow-md relative z-10 border-b-4 border-brand-500">
-            <h1 class="text-3xl font-extrabold tracking-tight">I.E. Santísima Niña María</h1>
-            <p class="text-brand-200 font-semibold mt-1 text-lg">Ciencias Sociales - Educación Secundaria</p>
-            <div class="inline-block bg-brand-600 text-amber-50 px-4 py-1.5 rounded-full font-bold mt-2 text-xs md:text-sm uppercase tracking-wide shadow-sm">
-                Tema: Formación de Estados Latinoamericanos y conflictos sociales
+        <header class="bg-gradient-to-r from-amber-900 to-orange-800 text-white p-6 text-center shadow-md relative z-10">
+            <h1 class="text-2xl md:text-3xl font-black tracking-tight uppercase">I.E. Santísima Niña María</h1>
+            <p class="text-amber-200 font-semibold mt-1 text-base md:text-lg">Área: Ciencias Sociales — 3° Secundaria</p>
+            <div class="inline-block bg-orange-600 text-amber-50 px-4 py-1.5 rounded-full font-bold mt-2 text-xs md:text-sm uppercase tracking-wide shadow-inner">
+                Tema: Formación de Estados Latinoamericanos y Conflictos
             </div>
         </header>
 
-        <!-- PANTALLA 1: REGISTRO E IDENTIFICACIÓN DEL ESTUDIANTE -->
+        <!-- PANTALLA DE REGISTRO -->
         <div id="screen-register" class="p-8">
-            <h2 class="text-2xl font-bold text-center mb-2 text-brand-950">¡Bienvenida al Reto de Ciencias Sociales!</h2>
-            <p class="text-center text-stone-600 mb-8">Selecciona tu grado y sección para buscar tus datos y comenzar la evaluación.</p>
+            <h2 class="text-2xl font-bold text-center mb-4 text-amber-950">¡Bienvenida al Reto Histórico!</h2>
+            <p class="text-center text-stone-600 mb-8 text-sm md:text-base">Identifica tus datos para validar tu participación y comenzar el cuestionario.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label class="block text-sm font-semibold text-stone-700 mb-2">Grado</label>
-                    <select id="sel-grado" class="w-full p-3 border border-brand-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white outline-none transition shadow-sm">
+                    <select id="sel-grado" class="w-full p-3 border border-amber-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white outline-none transition">
                         <option value="">Selecciona tu grado</option>
                         <option value="3">3ro Secundaria</option>
-                        <option value="4">4to Secundaria</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-stone-700 mb-2">Sección</label>
-                    <select id="sel-seccion" class="w-full p-3 border border-brand-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white outline-none transition shadow-sm">
+                    <select id="sel-seccion" class="w-full p-3 border border-amber-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white outline-none transition">
                         <option value="">Selecciona tu sección</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -125,589 +116,611 @@
             </div>
 
             <div class="mb-8">
-                <button id="btn-buscar-alumnas" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+                <button id="btn-buscar-alumnas" class="w-full bg-amber-800 hover:bg-amber-900 text-amber-50 font-bold py-3.5 px-4 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0">
                     Buscar mi nombre
                 </button>
             </div>
 
-            <div id="container-nombre" class="hidden fade-in mb-8">
-                <label class="block text-sm font-semibold text-stone-700 mb-2">Tu Nombre completo</label>
-                <select id="sel-nombre" class="w-full p-3 border border-brand-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white outline-none transition shadow-sm">
-                    <option value="">Selecciona tu nombre de la lista</option>
+            <div id="container-nombre" class="hidden fade-in">
+                <label class="block text-sm font-semibold text-stone-700 mb-2">Tu Nombre</label>
+                <select id="sel-nombre" class="w-full p-3 border border-amber-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white outline-none transition mb-6">
+                    <option value="">Selecciona tu nombre</option>
                 </select>
+
+                <button id="btn-iniciar" class="w-full bg-orange-700 hover:bg-orange-800 text-white font-bold py-4 px-4 rounded-xl shadow-lg text-lg transition transform hover:-translate-y-0.5 active:translate-y-0">
+                    ¡Comenzar la Evaluación!
+                </button>
             </div>
+            
+            <div id="loading-msg" class="hidden text-center text-amber-800 font-semibold mt-4">Cargando nómina de estudiantes...</div>
 
-            <button id="btn-start" class="hidden w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black text-lg py-4 px-6 rounded-2xl shadow-xl transition transform hover:scale-[1.01] active:scale-[0.99] fade-in">
-                ¡EMPEZAR EVALUACIÓN!
-            </button>
-
-            <!-- Crédito obligatorio en la parte inferior de la pantalla inicial -->
-            <div class="mt-8 text-center text-xs font-semibold text-stone-500 border-t border-stone-200 pt-4">
-                Elaborado por: <span class="text-brand-800 font-bold">Delia Ramos Valdez</span>
+            <!-- FIRMA DOCENTE -->
+            <div class="mt-8 pt-4 border-t border-stone-200 text-center text-sm text-stone-500">
+                Elaborado por: <span class="font-bold text-amber-900">Delia Ramos Valdez</span>
             </div>
         </div>
 
-        <!-- PANTALLA 2: INTERFAZ INTERACTIVA DE JUEGO / PREGUNTAS -->
-        <div id="screen-game" class="hidden p-6 md:p-8">
-            <div class="flex flex-wrap justify-between items-center mb-6 bg-amber-50 p-4 rounded-2xl border border-amber-200 gap-4">
+        <!-- PANTALLA DE JUEGO -->
+        <div id="screen-game" class="hidden p-6 md:p-8 fade-in relative">
+            
+            <div class="w-full bg-stone-300 rounded-full h-4 mb-6 relative overflow-hidden shadow-inner border border-stone-400">
+                <div id="timer-bar" class="bg-amber-600 h-4 rounded-full transition-all duration-1000 ease-linear" style="width: 100%"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-xs font-black text-stone-800" style="text-shadow: 0 0 2px white;" id="timer-text">20s</div>
+            </div>
+
+            <div class="flex justify-between items-center mb-6 bg-amber-50 p-4 rounded-2xl border border-amber-200 shadow-sm">
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">Estudiante:</span>
-                    <span id="display-nombre" class="font-extrabold text-brand-950 text-sm md:text-base"></span>
-                </div>
-                <div class="flex items-center gap-6">
-                    <div class="flex items-center gap-1.5" id="lives-container">
-                        <span class="text-2xl heart-beat">❤️</span>
-                        <span class="text-2xl heart-beat">❤️</span>
-                        <span class="text-2xl heart-beat">❤️</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider block">Puntaje</span>
-                        <span id="score" class="text-2xl font-black text-brand-700">0</span>
+                    <span class="font-bold text-amber-950">Vidas:</span>
+                    <div id="lives-container" class="flex gap-1 text-orange-600 text-2xl">
                     </div>
                 </div>
-            </div>
-
-            <div class="mb-4 flex justify-between items-center text-xs font-bold text-stone-400 uppercase tracking-wider">
-                <span id="question-count">Pregunta 1 de 22</span>
-                <span id="difficulty-tag" class="px-2.5 py-1 rounded-full bg-brand-100 text-brand-800">Dificultad: Fácil</span>
-            </div>
-
-            <div class="mb-6">
-                <div class="bg-stone-200 h-2.5 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="bg-brand-600 h-full w-0 transition-all duration-300"></div>
+                <div class="text-right">
+                    <span class="font-bold text-amber-950">Puntos:</span>
+                    <span id="score-display" class="text-2xl font-black text-orange-700">0</span>
                 </div>
             </div>
 
-            <div class="mb-6 bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
-                <div class="flex justify-between items-start gap-4">
-                    <h3 id="question-text" class="text-lg md:text-xl font-bold text-stone-800 leading-relaxed"></h3>
-                    <button id="btn-tts" onclick="speakCurrentQuestion()" class="p-2 bg-brand-100 hover:bg-brand-200 text-brand-800 rounded-xl transition flex-shrink-0" title="Escuchar la pregunta en voz alta">
-                        🔊
-                    </button>
-                </div>
+            <div class="mb-6 text-center">
+                <span id="question-number" class="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Pregunta 1</span>
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-stone-800 mt-3 leading-snug">¿Cargando pregunta...?</h3>
             </div>
 
-            <div id="options-container" class="grid grid-cols-1 gap-3.5 mb-6"></div>
-
-            <div id="feedback-panel" class="hidden p-4 rounded-xl mb-4 text-sm font-semibold fade-in"></div>
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Opciones dinámicas -->
+            </div>
         </div>
 
-        <!-- PANTALLA 3: RESULTADOS Y RESUMEN FINAL -->
+        <!-- PANTALLA DE RESULTADOS -->
         <div id="screen-results" class="hidden p-8 text-center fade-in">
-            <div id="results-icon" class="text-6xl mb-4">🏆</div>
-            <h2 id="results-title" class="text-3xl font-black text-stone-800 mb-2">¡Evaluación Completada!</h2>
-            <p id="results-subtitle" class="text-stone-600 mb-6">Has completado el cuestionario sobre la Formación de Estados Latinoamericanos.</p>
-
-            <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200 max-w-sm mx-auto mb-8">
-                <div class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">Puntaje Obtenido</div>
-                <div id="final-score" class="text-5xl font-black text-brand-700 mb-2">0</div>
-                <div id="final-percentage" class="text-sm font-semibold text-brand-900">0% de aciertos</div>
+            <h2 id="end-title" class="text-3xl font-black mb-2 text-amber-900">¡Evaluación Finalizada!</h2>
+            <p class="text-stone-600 text-base mb-6" id="end-message">Has completado tu participación en esta actividad.</p>
+            
+            <div class="bg-amber-50 border-4 border-amber-700 rounded-3xl p-6 inline-block mb-8 shadow-md">
+                <p class="text-xs text-amber-900 font-bold uppercase tracking-wider">Puntaje Obtenido</p>
+                <p id="final-score" class="text-5xl md:text-6xl font-black text-orange-700">0</p>
             </div>
 
-            <button onclick="location.reload()" class="bg-brand-700 hover:bg-brand-800 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
-                Volver a Intentar
+            <h3 class="text-lg font-bold text-amber-950 mb-3 flex items-center justify-center gap-2">
+                <span>🏆</span> Tabla de Posiciones <span>🏆</span>
+            </h3>
+            <div class="bg-white rounded-2xl border border-amber-200 p-4 max-h-60 overflow-y-auto mb-6 text-left shadow-inner">
+                <ul id="ranking-list" class="divide-y divide-amber-100 text-sm">
+                    <li class="py-2 text-center text-stone-400">Cargando resultados...</li>
+                </ul>
+            </div>
+
+            <button onclick="location.reload()" class="bg-amber-800 hover:bg-amber-900 text-amber-50 font-bold py-3.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+                Volver al Inicio
             </button>
         </div>
+
     </div>
 
     <script>
-        // CONFIGURACIÓN DE LA URL DE APPS SCRIPT
-        // ⚠️ REEMPLAZA ESTA LÍNEA CON TU URL REAL DE APPS SCRIPT ⚠️
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGFR6aiCtwM0rEd8Mn_8Wn1KMc66zGewZchm68av8eL6fahkgHOompnhxzSTor0eR4/exec";
-
-        // BANCO DE PREGUNTAS EDITADO SEGÚN EL TEMA (22 Preguntas con dificultad progresiva)
-        const questionsBank = [
-            // FÁCILES (1-7)
-            {
-                q: "¿Qué ideología política predominante en los criollos motivó el surgimiento de los nuevos Estados latinoamericanos tras las guerras de independencia?",
-                options: ["El absolutismo monárquico", "El liberalismo político", "El socialismo utópico", "El mercantilismo colonial"],
-                answer: 1
-            },
-            {
-                q: "¿Cuál fue una de las principales consecuencias económicas de las guerras de independencia en los países recién formados?",
-                options: ["Industrialización inmediata", "Destrucción de infraestructura y severo endeudamiento", "Crecimiento explosivo del comercio local", "Abolición total de todos los impuestos"],
-                answer: 1
-            },
-            {
-                q: "¿Qué figura política y militar cobró gran relevancia en América Latina ante la debilidad institucional de los nuevos Estados del siglo XIX?",
-                options: ["El Virrey", "El Caudillo", "El Monarca constitucional", "El Comisario republicano"],
-                answer: 1
-            },
-            {
-                q: "¿Qué principio jurídico aplicaron los países sudamericanos para fijar sus fronteras iniciales tomando como base las divisiones coloniales de 1810?",
-                options: ["Uti possidetis iuris", "Tratado de Tordesillas", "Pacto de San José", "Doctrina Monroe"],
-                answer: 0
-            },
-            {
-                q: "¿Qué potencia europea ejerció mayor hegemonía comercial y financiera sobre los Estados latinoamericanos a lo largo del siglo XIX?",
-                options: ["Estados Unidos", "Gran Bretaña", "Alemania", "Francia"],
-                answer: 1
-            },
-            {
-                q: "¿Qué conflicto bélico entre 1879 y 1883 enfrentó a Chile contra Perú y Bolivia por el control de los yacimientos salitreros?",
-                options: ["Guerra del Chaco", "Guerra de la Triple Alianza", "Guerra del Pacífico", "Guerra de la Confederación"],
-                answer: 2
-            },
-            {
-                q: "¿Qué sector de la sociedad continuó marginado y sometido a tributos u obligaciones forzadas en los primeros años republicanos?",
-                options: ["La élite criolla", "La población indígena y afrodescendiente", "Los comerciantes extranjeros", "El alto clero"],
-                answer: 1
-            },
-
-            // INTERMEDIAS (8-15)
-            {
-                q: "¿Cuál era el principal debate político entre la facción Centralista y la facción Federalista durante la organización territorial republicana?",
-                options: [
-                    "La adopción de una lengua oficial europea",
-                    "La concentración del poder en la capital versus la autonomía de las provincias",
-                    "El restablecimiento de la inquisición colonial",
-                    "La prohibición absoluta del comercio con el exterior"
-                ],
-                answer: 1
-            },
-            {
-                q: "¿En qué consistía la 'Doctrina Monroe' proclamada por los Estados Unidos en 1823?",
-                options: [
-                    "Promover la reconquista española de las antiguas colonias",
-                    "Sancionar económicamente a la corona británica",
-                    "Rechazar la intervención de potencias europeas en los asuntos del continente americano",
-                    "Crear un ejército único continental latinoamericano"
-                ],
-                answer: 2
-            },
-            {
-                q: "Durante el siglo XIX, ¿cuál fue el pilar fundamental del modelo económico primario-exportador adoptado por los Estados latinoamericanos?",
-                options: [
-                    "La producción industrial textil avanzada",
-                    "La extracción y exportación masiva de materias primas y minerales",
-                    "El desarrollo de tecnología y maquinaria pesada",
-                    "La venta de flota mercante hacia Asia"
-                ],
-                answer: 1
-            },
-            {
-                q: "¿Qué fue la Confederación Perú-Boliviana (1836-1839) liderada por Andrés de Santa Cruz?",
-                options: [
-                    "Un proyecto político y comercial para unificar temporalmente a Perú y Bolivia en una sola entidad regional",
-                    "Un tratado defensivo frente al imperio de Brasil",
-                    "Una alianza militar promovida y aceptada por Chile",
-                    "Una colonia administrada bajo mandato británico"
-                ],
-                answer: 0
-            },
-            {
-                q: "¿Cuál fue el impacto del auge de las exportaciones (como el guano, azúcar o café) en la estructura social de las repúblicas?",
-                options: [
-                    "La distribución masiva y equitativa de tierras a las comunidades campesinas",
-                    "La consolidación de una oligarquía terrateniente asociada con capitales extranjeros",
-                    "La eliminación total del latifundismo agrario",
-                    "La estatización absoluta de la propiedad privada"
-                ],
-                answer: 1
-            },
-            {
-                q: "¿Qué desencadenó la Guerra de la Triple Alianza (1864-1870) en la cuenca del Río de la Plata?",
-                options: [
-                    "Disputas geopolíticas y territoriales/fluviales entre Paraguay y la coalición integrada por Brasil, Argentina y Uruguay",
-                    "La ocupación naval francesa de Valparaíso",
-                    "Un levante general de las poblaciones aborígenes mapuches",
-                    "Un conflicto de impuestos de aduana entre Perú y España"
-                ],
-                answer: 0
-            },
-            {
-                q: "¿Qué recurso empleaban con frecuencia los caudillos militares para alcanzar el gobierno en un contexto de inestabilidad política?",
-                options: [
-                    "Elecciones generales democráticas y secretas",
-                    "Golpes de Estado, asonadas y levantamientos con apoyo de tropas regionales",
-                    "Designación por sucesión hereditaria",
-                    "Plebiscitos regulados por la diplomacia internacional"
-                ],
-                answer: 1
-            },
-            {
-                q: "¿Por qué el endeudamiento financiero externo condicionó la soberanía de los nuevos Estados latinoamericanos?",
-                options: [
-                    "Porque los bancos de Europa obligaban a crear escuelas gratuitas",
-                    "Porque ante el incumplimiento de deudas, los Estados acreedores aplicaban presión diplomática o intervenciones armadas",
-                    "Porque impidió el uso de monedas de oro en el comercio interno",
-                    "Porque restringió la compra de insumos sanitarios"
-                ],
-                answer: 1
-            },
-
-            // AVANZADAS (16-22)
-            {
-                q: "¿Qué obstáculo estructural impidió la consecución del proyecto panamericanista de Simón Bolívar en el Congreso de Panamá (1826)?",
-                options: [
-                    "La intervención militar directa de España en la cumbre",
-                    "Los fuertes regionalismos oligárquicos, tensiones territoriales e presiones de potencias extranjeras",
-                    "La expansión territorial del imperio Ruso en América central",
-                    "El compromiso firmado de restaurar los virreinatos"
-                ],
-                answer: 1
-            },
-            {
-                q: "El concepto de 'Constitucionalismo nominal' en la historia política latinoamericana del siglo XIX se refiere a:",
-                options: [
-                    "Leyes que prohibían cualquier enmienda parlamentaria",
-                    "Magna cartas inspiradas en modelos ilustrados pero desconectadas de la práctica jurídica y social real",
-                    "Normas redactadas exclusivamente en idioma latín",
-                    "Tratados constitucionales supervisados por el Vaticano"
-                ],
-                answer: 1
-            },
-            {
-                q: "¿De qué forma afectó la ideología del 'orden y progreso' positivista a las tierras comunales indígenas a finales del siglo XIX?",
-                options: [
-                    "Estableció estatutos de plena autonomía política para las comunidades",
-                    "Impulsó el despojo de tierras indígenas para integrarlas al mercado agroexportador aduciendo 'modernización'",
-                    "Ofreció subsidios económicos para la literatura en lenguas nativas",
-                    "Prohibió la venta de fundos agrícolas a ciudadanos extranjeros"
-                ],
-                answer: 1
-            },
-            {
-                q: "¿Cuál fue una de las principales cláusulas territoriales fijadas en el Tratado de Ancón (1883) tras la Guerra del Pacífico?",
-                options: [
-                    "La cesión perpetua de la provincia de Tarapacá a Chile y la retención temporal de Tacna y Arica",
-                    "La fijación fronteriza del territorio del Chaco Boreal",
-                    "La entrega de la provincia del Guayas a la soberanía peruana",
-                    "La transferencia del control aduanero del Callao a la corona española"
-                ],
-                answer: 0
-            },
-            {
-                q: "¿Qué característica tuvo el proceso de abolición de la esclavitud en gran parte de las repúblicas latinoamericanas?",
-                options: [
-                    "La sustitución de la hacienda por encomiendas eclesiásticas",
-                    "Se indemnizó a los antiguos propietarios terratenientes mientras los libertos continuaban en condiciones de precariedad o peonaje",
-                    "Se obligó a los libertos a abandonar el territorio nacional",
-                    "La clausura inmediata de todos los campos de cultivo agrario"
-                ],
-                answer: 1
-            },
-            {
-                q: "¿Cuál fue la orientación del diseño de las redes ferroviarias financiadas por capitales británicos en Sudamérica?",
-                options: [
-                    "Conectar de forma radial los centros de producción agro-minera directamente hacia los puertos de exportación",
-                    "Unir a los poblados indígenas aislados para impulsar su comercio local",
-                    "Servir exclusivamente como transporte urbano dentro de las grandes capitales",
-                    "Vincular las industrias manufactureras de los países limítrofes entre sí"
-                ],
-                answer: 0
-            },
-            {
-                q: "¿Qué función cumplió el sistema de 'enganche' o peonaje por deudas en el ámbito rural del siglo XIX?",
-                options: [
-                    "Un convenio de capacitación laboral con incentivos de promoción",
-                    "Un método de sujeción que amarraba a los trabajadores rurales mediante deudas permanentes con la hacienda o mina",
-                    "Un seguro de salud contratado por el Estado",
-                    "Un programa de financiamiento para pequeños propietarios"
-                ],
-                answer: 1
-            }
-        ];
-
-        // CONTROL DE ESTADO
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let lives = 3;
-        let selectedStudent = null;
-        let synth = window.speechSynthesis;
-
-        // SELECCIÓN DE ELEMENTOS DEL DOM
-        const screenRegister = document.getElementById('screen-register');
-        const screenGame = document.getElementById('screen-game');
-        const screenResults = document.getElementById('screen-results');
-        
-        const selGrado = document.getElementById('sel-grado');
-        const selSeccion = document.getElementById('sel-seccion');
-        const btnBuscarAlumnas = document.getElementById('btn-buscar-alumnas');
-        const containerNombre = document.getElementById('container-nombre');
-        const selNombre = document.getElementById('sel-nombre');
-        const btnStart = document.getElementById('btn-start');
-
-        const displayNombre = document.getElementById('display-nombre');
-        const scoreDisplay = document.getElementById('score');
-        const questionCountDisplay = document.getElementById('question-count');
-        const difficultyTag = document.getElementById('difficulty-tag');
-        const progressBar = document.getElementById('progress-bar');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const feedbackPanel = document.getElementById('feedback-panel');
-
-        // AUDIO CON TONE.JS
-        let correctSynth, wrongSynth;
-
-        function initAudio() {
-            if (!correctSynth) {
-                correctSynth = new Tone.Synth({
-                    oscillator: { type: 'triangle' },
-                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 }
-                }).toDestination();
-            }
-            if (!wrongSynth) {
-                wrongSynth = new Tone.Synth({
-                    oscillator: { type: 'sawtooth' },
-                    envelope: { attack: 0.01, decay: 0.4, sustain: 0, release: 0.1 }
-                }).toDestination();
-            }
-        }
-
-        function playSound(isCorrect) {
-            try {
-                Tone.start();
-                initAudio();
-                if (isCorrect) {
-                    correctSynth.triggerAttackRelease("E5", "8n", Tone.now());
-                    setTimeout(() => correctSynth.triggerAttackRelease("A5", "4n"), 100);
-                } else {
-                    wrongSynth.triggerAttackRelease("C3", "4n");
-                }
-            } catch(e) {
-                console.log("Audio not initialized yet or not supported", e);
-            }
-        }
-
-        // CONTROL DE NOTIFICACIONES
-        function showNotification(msg) {
+        // === SISTEMA DE NOTIFICACIONES ===
+        let notificationTimeout;
+        function showNotification(message) {
             const notif = document.getElementById('custom-notification');
-            document.getElementById('notification-msg').innerText = msg;
+            document.getElementById('notification-msg').textContent = message;
             notif.classList.add('show');
-            setTimeout(hideNotification, 4000);
+            clearTimeout(notificationTimeout);
+            notificationTimeout = setTimeout(hideNotification, 4000);
         }
 
         function hideNotification() {
             document.getElementById('custom-notification').classList.remove('show');
         }
 
-        // BÚSQUEDA DE ESTUDIANTES MEDIANTE GOOGLE APPS SCRIPT
-        btnBuscarAlumnas.addEventListener('click', async () => {
-            const grado = selGrado.value;
-            const seccion = selSeccion.value;
+        // === CONFIGURACIÓN DE AUDIO CON TONE.JS ===
+        const correctSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+        const incorrectSynth = new Tone.Synth().toDestination();
+        
+        function playCorrectSound() {
+            if (Tone.context.state !== 'running') Tone.start();
+            const now = Tone.now();
+            correctSynth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "8n", now);
+            correctSynth.volume.value = -8;
+        }
 
+        function playIncorrectSound() {
+            if (Tone.context.state !== 'running') Tone.start();
+            incorrectSynth.triggerAttackRelease("C2", "8n");
+            incorrectSynth.volume.value = -8;
+        }
+
+        // === SINTESIS DE VOZ ===
+        function speakQuestion(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const cleanText = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s¿?]/g, '');
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'es-ES'; 
+                utterance.rate = 1.05; 
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // === FEEDBACK VISUAL ===
+        const frasesCorrectas = ["¡EXCELENTE!", "¡CORRECTO!", "¡MUY BIEN!", "¡GRAN TRABAJO!", "¡RESPUESTA CERTERA!"];
+        const frasesIncorrectas = ["¡SIGUE INTENTANDO!", "¡CONCÉNTRATE!", "¡REVISA LA FUENTE!", "¡CUIDADO!", "¡NO TE RINDAS!"];
+
+        function showFeedback(isCorrect) {
+            const overlay = document.getElementById('feedback-overlay');
+            const textEl = document.getElementById('feedback-text');
+            
+            const frases = isCorrect ? frasesCorrectas : frasesIncorrectas;
+            const fraseAzar = frases[Math.floor(Math.random() * frases.length)];
+            
+            textEl.textContent = fraseAzar;
+            textEl.className = `text-4xl md:text-6xl font-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] text-center tracking-wider feedback-pop ${isCorrect ? 'text-amber-400' : 'text-red-500'}`;
+            
+            overlay.classList.remove('hidden');
+            
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                textEl.classList.remove('feedback-pop');
+            }, 1000); 
+        }
+
+        // === BANCO DE PREGUNTAS EXTRAÍDAS RIGUROSAMENTE DEL PDF (22 PREGUNTAS) ===
+        const questionBank = [
+            // FÁCILES (1-7)
+            { 
+                q: "¿Qué sector de la élite colonial fue reemplazado tras la independencia por la nueva élite criolla?", 
+                options: ["Aristócratas y altos funcionarios españoles", "Los curacas indígenas ilustrados", "Arrieros y comerciantes populares", "Las órdenes religiosas exclusivamente"], 
+                answer: 0 
+            },
+            { 
+                q: "Según el texto, ¿qué grupo representaba la mayoría demográfica del Perú en 1827 (60%)?", 
+                options: ["Mestizos urbanos", "Población indígena", "Criollos terratenientes", "Esclavos afrodescendientes"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué impuesto colonial que gravaba las ventas fue abolido tempranamente para estimular la producción?", 
+                options: ["El Diezmo", "La Alcabala", "El Quinto Real", "La Media Anata"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué corporación social mantuvo una enorme influencia inalterada tras el proceso independentista?", 
+                options: ["El Consulado de Lima", "La Iglesia católica", "Los gremios de artesanos", "Las cofradías rurales"], 
+                answer: 1 
+            },
+            { 
+                q: "En el inicio republicano, ¿cuál era la actividad económica predominante en la estructura productiva?", 
+                options: ["Industrial textil", "Agropecuaria", "Comercial bancaria", "Minera mecanizada"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué líder americano propuso construir un Estado unificado hispanoamericano en la década de 1820?", 
+                options: ["José de San Martín", "Simón Bolívar", "Antonio José de Sucre", "Mariano Arce"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Cuál fue una causa geográfica que impidió la unificación continental latinoamericana?", 
+                options: ["Ausencia de puertos fluviales", "Enormes distancias y precarias comunicaciones", "Falta de acceso al océano Pacífico", "La selva amazónica únicamente"], 
+                answer: 1 
+            },
+
+            // INTERMEDIAS (8-16)
+            { 
+                q: "¿Cómo se denominó a los terratenientes provincianos que acumularon poder económico y político en el campo?", 
+                options: ["Caciques", "Gamonales", "Oidores", "Subprefectos"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué porcentaje aproximado de los ingresos del Estado representó la reintroducida 'Contribución Indígena'?", 
+                options: ["4%", "10%", "25%", "50%"], 
+                answer: 2 
+            },
+            { 
+                q: "¿Cuál fue el fundamento o justificación del Estado para imponer la contribución única a los indígenas?", 
+                options: ["Financiar las guerras contra el Brasil", "Respaldar la posesión de sus tierras comunales", "Pagar la deuda externa con Gran Bretaña", "Construir las sedes judiciales de Arequipa y Puno"], 
+                answer: 1 
+            },
+            { 
+                q: "¿En qué año se reintrodujo formalmente el tributo indígena tras ser abolido por San Martín en 1821?", 
+                options: ["1823", "1826", "1830", "1840"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué requisito estipulado en la Constitución de 1823 para ser ciudadano fue postergado hasta 1896?", 
+                options: ["Tener propiedad inmueble", "Ser peruano de nacimiento", "Saber leer y escribir", "Tener más de 25 años"], 
+                answer: 2 
+            },
+            { 
+                q: "¿Qué principio territorial fijaba las fronteras republicanas basándose en los dominios coloniales de 1810?", 
+                options: ["Libre determinación", "Utis possidetis", "Tratado de San Ildefonso", "Convenio de Girón"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué levantamiento campesino e indígena entre 1825 y 1828 se opuso al ordenamiento republicano en Huanta?", 
+                options: ["Rebelión de Iquicha", "Motín de Balconcillo", "Insurrección de los Curacas", "Proclamación de Jaén"], 
+                answer: 0 
+            },
+            { 
+                q: "¿Quién lideró la rebelión de los iquichanos buscando mantener los derechos concedidos por el sistema colonial?", 
+                options: ["Mariano Arce", "Antonio Navala Huachaca", "Carlos Contreras", "Marcos Cueto"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué corte integraba el Poder Judicial republicano junto con la Corte Suprema de Lima, Trujillo y Arequipa?", 
+                options: ["Corte de Cuzco", "Corte de Puno", "Corte de Tacna", "Corte de Huamanga"], 
+                answer: 1 
+            },
+
+            // AVANZADAS (17-22)
+            { 
+                q: "¿Cuál era la postura del pensamiento conservador latinoamericano respecto al rol social de la Iglesia?", 
+                options: ["Eliminar sus diezmos y fueros", "Considerarla fundamental para dar estabilidad a la sociedad", "Subordinarla por completo al Poder Legislativo", "Sustituirla por la filosofía ilustrada"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué caracterizaba al pensamiento liberal frente a los privilegios (fueros) corporativos del Ejército y la Iglesia?", 
+                options: ["Los respaldaba para asegurar la paz", "Se oponía a ellos promoviendo la igualdad jurídica", "Defendía únicamente los fueros de los militares criollos", "Proponía crear fueros especiales para artesanos"], 
+                answer: 1 
+            },
+            { 
+                q: "A nivel regional en el Perú inicial, ¿cuál era la orientación productiva predominante en la Sierra Central?", 
+                options: ["Azúcar y vino para exportación europea", "Abastecimiento agrícola para consumo propio y de Lima", "Ganadería lanar hacia el Alto Perú", "Obrajes textiles industrializados"], 
+                answer: 1 
+            },
+            { 
+                q: "¿Qué unidad administrativo-territorial fue incorporada en 1836 al interior de las provincias peruanas?", 
+                options: ["Las Intendencias", "Los Distritos", "Los Partidos", "Las Audiencias"], 
+                answer: 1 
+            },
+            { 
+                q: "Según los informes defensoriales en el Perú contemporáneo, ¿qué porcentaje de provincias sufre conflictos por demarcación territorial?", 
+                options: ["50%", "60%", "76%", "89%"], 
+                answer: 3 
+            },
+            { 
+                q: "En el esquema de la Oficina Nacional de Diálogo (ONDS), ¿qué tipo de actor en un conflicto ejerce el rol de mediación o facilitación oficial?", 
+                options: ["Actor Primario", "Actor Secundario", "Tercero", "Observador Internacional"], 
+                answer: 2 
+            }
+        ];
+
+        // === COMUNICACIÓN CON GOOGLE SHEETS ===
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzoGrxaGZ8vX5G2BWrEdNO8tiivJSWvQHdeEDYmm82VOppgcufSNScR-EFckBQpBGl3/exec"; 
+        
+        const server = {
+            withSuccessHandler: function(callback) {
+                return {
+                    getStudents: function(grado, seccion) {
+                        fetch(`${GOOGLE_SHEETS_URL}?action=getStudents&grado=${grado}&seccion=${seccion}`)
+                            .then(response => response.json())
+                            .then(result => { 
+                                if (result.success) {
+                                    callback(result.data || []); 
+                                } else {
+                                    showNotification("Error: " + result.message);
+                                    callback([]);
+                                }
+                            })
+                            .catch(error => { 
+                                showNotification("Error de conexión al cargar la lista.");
+                                console.error('Error:', error); 
+                                callback([]); 
+                            });
+                    },
+                    saveScore: async function(nombre, grado, seccion, puntaje) {
+                        let ipEstudiante = 'Desconocido';
+                        
+                        try {
+                            const res = await fetch('https://1.1.1.1/cdn-cgi/trace');
+                            const text = await res.text();
+                            const match = text.match(/ip=(.*)/);
+                            if (match && match[1]) {
+                                ipEstudiante = match[1].trim();
+                            }
+                        } catch (e1) {
+                            try {
+                                const res2 = await fetch('https://api.ipify.org?format=json');
+                                const data = await res2.json();
+                                ipEstudiante = data.ip;
+                            } catch (e2) {}
+                        }
+
+                        fetch(`${GOOGLE_SHEETS_URL}?action=saveScore&nombre=${encodeURIComponent(nombre)}&grado=${grado}&seccion=${seccion}&puntaje=${puntaje}&ip=${ipEstudiante}`)
+                            .then(response => response.json())
+                            .then(result => { callback(); })
+                            .catch(error => { console.error('Error al guardar puntaje:', error); callback(); });
+                    },
+                    getRanking: function() {
+                        fetch(`${GOOGLE_SHEETS_URL}?action=getRanking`)
+                            .then(response => response.json())
+                            .then(result => { callback(result.data || []); })
+                            .catch(error => { console.error('Error al obtener ranking:', error); callback([]); });
+                    }
+                };
+            }
+        };
+
+        // === LÓGICA DEL JUEGO Y ESTADOS ===
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let lives = 5;
+        let score = 0;
+        let studentData = { nombre: '', grado: '', seccion: '' };
+        
+        let timeLeft = 20;
+        let timerInterval = null;
+
+        const screens = {
+            register: document.getElementById('screen-register'),
+            game: document.getElementById('screen-game'),
+            results: document.getElementById('screen-results')
+        };
+        
+        const elements = {
+            selGrado: document.getElementById('sel-grado'),
+            selSeccion: document.getElementById('sel-seccion'),
+            btnBuscar: document.getElementById('btn-buscar-alumnas'),
+            containerNombre: document.getElementById('container-nombre'),
+            selNombre: document.getElementById('sel-nombre'),
+            btnIniciar: document.getElementById('btn-iniciar'),
+            loadingMsg: document.getElementById('loading-msg'),
+            
+            livesContainer: document.getElementById('lives-container'),
+            scoreDisplay: document.getElementById('score-display'),
+            questionNumber: document.getElementById('question-number'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            timerBar: document.getElementById('timer-bar'),
+            timerText: document.getElementById('timer-text'),
+            
+            finalScore: document.getElementById('final-score'),
+            rankingList: document.getElementById('ranking-list'),
+            endTitle: document.getElementById('end-title'),
+            endMessage: document.getElementById('end-message')
+        };
+
+        function showScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            screens[screenName].classList.remove('hidden');
+        }
+
+        elements.btnBuscar.addEventListener('click', () => {
+            const grado = elements.selGrado.value;
+            const seccion = elements.selSeccion.value;
+            
             if (!grado || !seccion) {
-                showNotification("Por favor selecciona Grado y Sección antes de consultar.");
+                showNotification('Por favor selecciona tu grado y sección.');
                 return;
             }
 
-            if (SCRIPT_URL.includes("TU_SCRIPT_ID_AQUI")) {
-                showNotification("¡Atención! Aún no has pegado la URL de Apps Script en la línea 232.");
-            }
+            elements.loadingMsg.classList.remove('hidden');
+            elements.btnBuscar.disabled = true;
+            elements.btnBuscar.classList.add('opacity-50', 'cursor-not-allowed');
 
-            btnBuscarAlumnas.disabled = true;
-            btnBuscarAlumnas.innerText = "Consultando nómina...";
-
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=getEstudiantes&grado=${encodeURIComponent(grado)}&seccion=${encodeURIComponent(seccion)}`);
-                const data = await response.json();
-
-                if (data && data.estudiantes && data.estudiantes.length > 0) {
-                    populateEstudiantesSelect(data.estudiantes);
+            server.withSuccessHandler((alumnas) => {
+                elements.loadingMsg.classList.add('hidden');
+                elements.btnBuscar.disabled = false;
+                elements.btnBuscar.classList.remove('opacity-50', 'cursor-not-allowed');
+                
+                elements.selNombre.innerHTML = '<option value="">Selecciona tu nombre</option>';
+                if (alumnas && alumnas.length > 0) {
+                    alumnas.forEach(alumna => {
+                        const opt = document.createElement('option');
+                        opt.value = alumna;
+                        opt.textContent = alumna;
+                        elements.selNombre.appendChild(opt);
+                    });
+                    elements.containerNombre.classList.remove('hidden');
                 } else {
-                    showNotification("No se encontraron alumnas para este grado/sección en la hoja 'Estudiantes'.");
-                    loadFallbackEstudiantes(grado, seccion);
+                    showNotification('No se encontraron estudiantes para el grado y sección seleccionados.');
                 }
-            } catch (err) {
-                console.warn("No se pudo conectar a la URL de Apps Script. Cargando nómina demostrativa local.", err);
-                showNotification("Error al conectar con Google Sheets. Revisa los permisos de despliegue.");
-                loadFallbackEstudiantes(grado, seccion);
-            } finally {
-                btnBuscarAlumnas.disabled = false;
-                btnBuscarAlumnas.innerText = "Buscar mi nombre";
-            }
+            }).getStudents(grado, seccion);
         });
 
-        function loadFallbackEstudiantes(grado, seccion) {
-            const mockData = [
-                `Estudiante 01 (${grado}°${seccion})`,
-                `Estudiante 02 (${grado}°${seccion})`,
-                `Estudiante 03 (${grado}°${seccion})`,
-                `Estudiante 04 (${grado}°${seccion})`,
-                `Estudiante 05 (${grado}°${seccion})`
-            ];
-            populateEstudiantesSelect(mockData);
+        elements.btnIniciar.addEventListener('click', () => {
+            const nombre = elements.selNombre.value;
+            if (!nombre) {
+                showNotification("Selecciona tu nombre para continuar.");
+                return;
+            }
+            
+            studentData = { nombre: nombre, grado: elements.selGrado.value, seccion: elements.selSeccion.value };
+            startGame();
+        });
+
+        function startGame() {
+            if(Tone.context.state !== 'running') Tone.start();
+
+            // Mezclar preguntas
+            currentQuestions = [...questionBank].sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            lives = 5;
+            score = 0;
+            
+            updateLivesUI();
+            updateScoreUI();
+            showScreen('game');
+            loadQuestion();
         }
 
-        function populateEstudiantesSelect(lista) {
-            selNombre.innerHTML = '<option value="">Selecciona tu nombre</option>';
-            lista.forEach(nombre => {
-                const opt = document.createElement('option');
-                opt.value = nombre;
-                opt.textContent = nombre;
-                selNombre.appendChild(opt);
-            });
-            containerNombre.classList.remove('hidden');
+        const corazonSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="heart-beat"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+
+        function updateLivesUI() {
+            elements.livesContainer.innerHTML = '';
+            for(let i=0; i<5; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = corazonSVG;
+                if(i >= lives) {
+                    heart.querySelector('svg').classList.remove('heart-beat');
+                    heart.querySelector('svg').classList.add('heart-lost');
+                }
+                elements.livesContainer.appendChild(heart);
+            }
         }
 
-        selNombre.addEventListener('change', () => {
-            if (selNombre.value) {
-                selectedStudent = selNombre.value;
-                btnStart.classList.remove('hidden');
-            } else {
-                btnStart.classList.add('hidden');
-            }
-        });
+        function updateScoreUI() {
+            elements.scoreDisplay.textContent = score;
+        }
 
-        // INICIO DEL RETO
-        btnStart.addEventListener('click', () => {
-            if (!selectedStudent) return;
-            screenRegister.classList.add('hidden');
-            screenGame.classList.remove('hidden');
-            displayNombre.innerText = selectedStudent;
-            renderQuestion();
-        });
-
-        // DESPLIEGUE DE PREGUNTA
-        function renderQuestion() {
-            const currentQ = questionsBank[currentQuestionIndex];
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 20;
+            updateTimerUI();
             
-            questionCountDisplay.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questionsBank.length}`;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const percentage = (timeLeft / 20) * 100;
+            elements.timerBar.style.width = `${percentage}%`;
+            elements.timerText.textContent = `${timeLeft}s`;
             
-            if (currentQuestionIndex < 7) {
-                difficultyTag.innerText = "Dificultad: Fácil";
-                difficultyTag.className = "px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold";
-            } else if (currentQuestionIndex < 15) {
-                difficultyTag.innerText = "Dificultad: Intermedia";
-                difficultyTag.className = "px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold";
-            } else {
-                difficultyTag.innerText = "Dificultad: Avanzada";
-                difficultyTag.className = "px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 font-bold";
+            if (timeLeft <= 5) elements.timerBar.classList.replace('bg-amber-600', 'bg-red-600');
+            else elements.timerBar.classList.replace('bg-red-600', 'bg-amber-600');
+        }
+
+        function handleTimeout() {
+            window.speechSynthesis.cancel();
+            playIncorrectSound();
+            showFeedback(false);
+            
+            const buttons = elements.optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            const q = currentQuestions[currentIndex];
+            buttons[q.answer].classList.replace('border-amber-200', 'border-amber-700');
+            buttons[q.answer].classList.replace('bg-white', 'bg-amber-100');
+            
+            lives--;
+            updateLivesUI();
+            
+            setTimeout(() => {
+                if (lives <= 0) endGame(false);
+                else { currentIndex++; loadQuestion(); }
+            }, 2000);
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= currentQuestions.length) {
+                endGame(true);
+                return;
             }
 
-            const pct = ((currentQuestionIndex) / questionsBank.length) * 100;
-            progressBar.style.width = `${pct}%`;
-
-            questionText.innerText = currentQ.q;
-            optionsContainer.innerHTML = '';
-            feedbackPanel.classList.add('hidden');
-
-            currentQ.options.forEach((optText, idx) => {
+            const q = currentQuestions[currentIndex];
+            elements.questionNumber.textContent = `Pregunta ${currentIndex + 1} de ${currentQuestions.length}`;
+            elements.questionText.textContent = q.q;
+            
+            elements.optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left p-4 rounded-xl border border-stone-200 bg-stone-50 hover:bg-brand-50 hover:border-brand-300 font-medium text-stone-800 transition shadow-sm flex items-start gap-3 active:scale-[0.99]";
-                btn.innerHTML = `
-                    <span class="w-6 h-6 rounded-full bg-brand-200 text-brand-900 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span>
-                    <span class="text-sm md:text-base">${optText}</span>
-                `;
-                btn.onclick = () => handleAnswer(idx);
-                optionsContainer.appendChild(btn);
+                btn.className = "bg-white border-2 border-amber-200 text-stone-800 hover:border-amber-600 hover:bg-amber-50 font-semibold py-3.5 px-5 rounded-xl shadow-sm transition transform hover:-translate-y-0.5 text-left w-full text-sm md:text-base leading-snug";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                elements.optionsContainer.appendChild(btn);
             });
+            
+            startTimer();
+            speakQuestion(q.q);
         }
 
-        // EVALUACIÓN DE SELECCIÓN
-        function handleAnswer(selectedIndex) {
-            const currentQ = questionsBank[currentQuestionIndex];
-            const isCorrect = selectedIndex === currentQ.answer;
+        function checkAnswer(selectedIndex, btnElement) {
+            clearInterval(timerInterval);
+            window.speechSynthesis.cancel();
 
-            const buttons = optionsContainer.querySelectorAll('button');
+            const buttons = elements.optionsContainer.querySelectorAll('button');
             buttons.forEach(b => b.disabled = true);
 
-            playSound(isCorrect);
-            triggerFeedbackOverlay(isCorrect);
+            const q = currentQuestions[currentIndex];
+            const isCorrect = (selectedIndex === q.answer);
 
             if (isCorrect) {
-                score += 100 + (currentQuestionIndex * 10);
-                scoreDisplay.innerText = score;
-                buttons[selectedIndex].classList.remove('bg-stone-50', 'border-stone-200');
-                buttons[selectedIndex].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                playCorrectSound();
+                showFeedback(true);
+                btnElement.classList.replace('border-amber-200', 'border-amber-600');
+                btnElement.classList.replace('bg-white', 'bg-amber-600');
+                btnElement.classList.replace('text-stone-800', 'text-white');
+                score += 10;
+                updateScoreUI();
             } else {
-                lives--;
-                updateLivesDisplay();
-                buttons[selectedIndex].classList.remove('bg-stone-50', 'border-stone-200');
-                buttons[selectedIndex].classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+                playIncorrectSound();
+                showFeedback(false);
+                btnElement.classList.replace('border-amber-200', 'border-red-500');
+                btnElement.classList.replace('bg-white', 'bg-red-600');
+                btnElement.classList.replace('text-stone-800', 'text-white');
                 
-                buttons[currentQ.answer].classList.remove('bg-stone-50', 'border-stone-200');
-                buttons[currentQ.answer].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                buttons[q.answer].classList.replace('border-amber-200', 'border-amber-700');
+                buttons[q.answer].classList.replace('bg-white', 'bg-amber-100');
+                
+                lives--;
+                updateLivesUI();
             }
 
             setTimeout(() => {
-                if (lives <= 0 || currentQuestionIndex >= questionsBank.length - 1) {
-                    finishGame();
-                } else {
-                    currentQuestionIndex++;
-                    renderQuestion();
-                }
-            }, 1400);
+                if (lives <= 0) endGame(false);
+                else { currentIndex++; loadQuestion(); }
+            }, 1500);
         }
 
-        function updateLivesDisplay() {
-            const container = document.getElementById('lives-container');
-            const hearts = container.querySelectorAll('span');
-            hearts.forEach((h, idx) => {
-                if (idx >= lives) {
-                    h.classList.add('heart-lost');
-                }
-            });
-        }
-
-        function triggerFeedbackOverlay(isCorrect) {
-            const overlay = document.getElementById('feedback-overlay');
-            const text = document.getElementById('feedback-text');
+        function endGame(won) {
+            clearInterval(timerInterval);
+            window.speechSynthesis.cancel();
+            showScreen('results');
+            elements.finalScore.textContent = score;
             
-            overlay.classList.remove('hidden');
-            text.classList.add('feedback-pop');
-
-            if (isCorrect) {
-                text.innerText = "¡CORRECTO!";
-                text.className = "text-5xl md:text-7xl font-black text-emerald-400 drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] tracking-wider";
+            if(won) {
+                elements.endTitle.textContent = "¡Felicitaciones, completaste la actividad!";
+                elements.endTitle.className = "text-3xl font-black mb-2 text-amber-900";
+                elements.endMessage.textContent = "Has demostrado una excelente comprensión de los contenidos históricos.";
             } else {
-                text.innerText = "¡INCORRECTO!";
-                text.className = "text-5xl md:text-7xl font-black text-rose-500 drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] tracking-wider";
+                elements.endTitle.textContent = "¡Se agotaron tus oportunidades!";
+                elements.endTitle.className = "text-3xl font-black mb-2 text-red-700";
+                elements.endMessage.textContent = "Repasa el material de estudio y vuelve a intentarlo.";
             }
 
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-                text.classList.remove('feedback-pop');
-            }, 1200);
+            elements.rankingList.innerHTML = '<li class="py-2 text-center text-stone-500">Registrando tu puntaje...</li>';
+            
+            server.withSuccessHandler(() => {
+                loadRanking();
+            }).saveScore(studentData.nombre, studentData.grado, studentData.seccion, score);
         }
 
-        // LECTURA EN VOZ ALTA (SPEECH SYNTHESIS)
-        function speakCurrentQuestion() {
-            if (!synth) return;
-            synth.cancel();
-            const qText = questionsBank[currentQuestionIndex].q;
-            const utterance = new SpeechSynthesisUtterance(qText);
-            utterance.lang = 'es-ES';
-            utterance.rate = 0.95;
-            synth.speak(utterance);
-        }
-
-        // REGISTRO DE RESULTADOS Y ENVÍO A APPS SCRIPT
-        async function finishGame() {
-            screenGame.classList.add('hidden');
-            screenResults.classList.remove('hidden');
-
-            const totalScore = score;
-            const maxPossible = (questionsBank.length * 100) + 1500;
-            const percentage = Math.round((totalScore / maxPossible) * 100);
-
-            document.getElementById('final-score').innerText = totalScore;
-            document.getElementById('final-percentage').innerText = `${percentage}% de rendimiento global`;
-
-            if (lives <= 0) {
-                document.getElementById('results-icon').innerText = "💔";
-                document.getElementById('results-title').innerText = "Agotaste tus intentos";
-                document.getElementById('results-subtitle').innerText = "Te recomendamos revisar el material de estudio e intentarlo nuevamente.";
-            }
-
-            // Envío por POST a Google Sheets
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        estudiante: selectedStudent,
-                        grado: selGrado.value,
-                        seccion: selSeccion.value,
-                        puntaje: totalScore,
-                        aciertos: currentQuestionIndex - (3 - lives)
-                    })
+        function loadRanking() {
+            elements.rankingList.innerHTML = '<li class="py-2 text-center text-stone-400">Cargando tabla de posiciones...</li>';
+            
+            server.withSuccessHandler((ranking) => {
+                elements.rankingList.innerHTML = '';
+                if(ranking.length === 0) {
+                    elements.rankingList.innerHTML = '<li class="py-2 text-center text-stone-500">Aún no hay registros de estudiantes.</li>';
+                    return;
+                }
+                
+                ranking.forEach((r, index) => {
+                    const li = document.createElement('li');
+                    li.className = "py-3 flex justify-between items-center";
+                    
+                    let badgeColor = "bg-amber-100 text-amber-900";
+                    if(index === 0) badgeColor = "bg-amber-500 text-white font-black";
+                    else if(index === 1) badgeColor = "bg-orange-400 text-white font-black";
+                    else if(index === 2) badgeColor = "bg-stone-400 text-white font-black";
+                    
+                    li.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-full ${badgeColor} flex items-center justify-center font-bold text-xs shadow-sm">${index + 1}</span>
+                            <div>
+                                <p class="font-bold text-stone-800">${r.nombre}</p>
+                                <p class="text-xs text-stone-500">${r.grado}° "${r.seccion}"</p>
+                            </div>
+                        </div>
+                        <div class="font-black text-amber-800 text-base">${r.puntaje} pts</div>
+                    `;
+                    elements.rankingList.appendChild(li);
                 });
-            } catch (err) {
-                console.warn("No se pudo sincronizar los datos con Google Sheets:", err);
-            }
+            }).getRanking();
         }
     </script>
 </body>
