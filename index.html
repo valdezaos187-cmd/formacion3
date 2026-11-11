@@ -212,8 +212,8 @@
 
     <script>
         // CONFIGURACIÓN DE LA URL DE APPS SCRIPT
-        // Reemplaza esta variable pública desplegada en Google Apps Script
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvh0fhOKS9IKx2tEYVbGQ9lcVWQc3ATOo3Fw1CsxyefR8czPaMDhWXz60NZhYT1ci6/exec";
+        // ⚠️ REEMPLAZA ESTA LÍNEA CON TU URL REAL DE APPS SCRIPT ⚠️
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGFR6aiCtwM0rEd8Mn_8Wn1KMc66zGewZchm68av8eL6fahkgHOompnhxzSTor0eR4/exec";
 
         // BANCO DE PREGUNTAS EDITADO SEGÚN EL TEMA (22 Preguntas con dificultad progresiva)
         const questionsBank = [
@@ -492,20 +492,26 @@
                 return;
             }
 
+            if (SCRIPT_URL.includes("TU_SCRIPT_ID_AQUI")) {
+                showNotification("¡Atención! Aún no has pegado la URL de Apps Script en la línea 232.");
+            }
+
             btnBuscarAlumnas.disabled = true;
             btnBuscarAlumnas.innerText = "Consultando nómina...";
 
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getEstudiantes&grado=${grado}&seccion=${seccion}`);
+                const response = await fetch(`${SCRIPT_URL}?action=getEstudiantes&grado=${encodeURIComponent(grado)}&seccion=${encodeURIComponent(seccion)}`);
                 const data = await response.json();
 
                 if (data && data.estudiantes && data.estudiantes.length > 0) {
                     populateEstudiantesSelect(data.estudiantes);
                 } else {
+                    showNotification("No se encontraron alumnas para este grado/sección en la hoja 'Estudiantes'.");
                     loadFallbackEstudiantes(grado, seccion);
                 }
             } catch (err) {
                 console.warn("No se pudo conectar a la URL de Apps Script. Cargando nómina demostrativa local.", err);
+                showNotification("Error al conectar con Google Sheets. Revisa los permisos de despliegue.");
                 loadFallbackEstudiantes(grado, seccion);
             } finally {
                 btnBuscarAlumnas.disabled = false;
